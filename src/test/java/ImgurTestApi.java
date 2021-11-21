@@ -30,8 +30,8 @@ public class ImgurTestApi {
                 .statusCode(is(200))
                 .body("success", is(true))
                 .body("status", is(200))
-                .body("data.bio", is("Ololo test"))
-                .body("data.reputation", is(16))
+                .body("data.bio", is(null))
+                .body("data.reputation", is(0))
                 .log()
                 .all()
                 .when()
@@ -70,7 +70,7 @@ public class ImgurTestApi {
     @DisplayName("Тест обновления информации о картинке")
     @Test
     void testUpdateImageInfo() {
-        String imageHash = "vKtKhId";
+        String imageHash = "eXl1Rok";
         String url = "image/" + imageHash;
 
         RequestSpecification requestSpecification = new RequestSpecBuilder()
@@ -96,7 +96,102 @@ public class ImgurTestApi {
                 .spec(responseSpecification)
                 .when()
                 .post(url);
-
     }
+
+    @DisplayName("Тест добавления картинки в избранное")
+    @Test
+    void testImageFavorite() {
+        String imageHash = "eXl1Rok";
+        String url = "image/" + imageHash + "/favorite";
+
+        RequestSpecification requestSpecification = new RequestSpecBuilder()
+                .build();
+
+        ResponseSpecification responseSpecification = new ResponseSpecBuilder()
+                .expectBody("success", is(true))
+                .expectBody("data", is("favorited"))
+                .expectStatusCode(200)
+                .build();
+
+        given().when()
+                .auth()
+                .oauth2(ImgurApiParams.TOKEN)
+                .log()
+                .all()
+                .spec(requestSpecification)
+                .expect()
+                .log()
+                .all()
+                .spec(responseSpecification)
+                .when()
+                .post(url);
+    }
+
+
+    @DisplayName("Тест удаления картинки")
+    @Test
+    void testDeleteImage() {
+        String imageHash = "eXl1Rok";
+        String url = "image/" + imageHash;
+
+        RequestSpecification requestSpecification = new RequestSpecBuilder()
+                .build();
+
+        ResponseSpecification responseSpecification = new ResponseSpecBuilder()
+                .expectBody("success", is(true))
+                .expectBody("data", is(true))
+                .expectStatusCode(200)
+                .build();
+
+        given().when()
+                .auth()
+                .oauth2(ImgurApiParams.TOKEN)
+                .log()
+                .all()
+                .spec(requestSpecification)
+                .expect()
+                .log()
+                .all()
+                .spec(responseSpecification)
+                .when()
+                .post(url);
+    }
+
+    @DisplayName("Создание альбома")
+    @Test
+    void testCreationAlbum() {
+//        String imageHash = "nYcP2p6";
+        String url = "/album";
+
+        RequestSpecification requestSpecification = new RequestSpecBuilder()
+                .addFormParam("ids", "nYcP2p6")
+                .addFormParam("title", "Omg Braxton")
+                .addFormParam("description", "Just a simple mem")
+                .addFormParam("cover", "nYcP2p6")
+                .build();
+
+        ResponseSpecification responseSpecification = new ResponseSpecBuilder()
+                .expectBody("success", is(true))
+                .expectBody("data.id", is("sgswVTm"))
+                .expectStatusCode(200)
+                .build();
+
+        given().when()
+                .auth()
+                .oauth2(ImgurApiParams.TOKEN)
+                .log()
+                .all()
+                .spec(requestSpecification)
+                .expect()
+                .log()
+                .all()
+                .spec(responseSpecification)
+                .when()
+                .post(url);
+    }
+
+
+
+
 
 }
