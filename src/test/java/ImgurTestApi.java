@@ -127,7 +127,6 @@ public class ImgurTestApi {
                 .post(url);
     }
 
-
     @DisplayName("Тест удаления картинки")
     @Test
     void testDeleteImage() {
@@ -188,6 +187,154 @@ public class ImgurTestApi {
                 .spec(responseSpecification)
                 .when()
                 .post(url);
+    }
+
+    @DisplayName("Что лежит в альбоме")
+    @Test
+    void testPicturesInTheAlbum() {
+        String albumHash = "lCV89PY";
+        String url = albumHash + "/images";
+
+        RequestSpecification requestSpecification = new RequestSpecBuilder()
+                .build();
+
+        ResponseSpecification responseSpecification = new ResponseSpecBuilder()
+                .expectBody("data.type", is("image/jpeg"))
+                .expectBody("success", is(true))
+                .expectStatusCode(200)
+                .build();
+
+        given().when()
+                .auth()
+                .oauth2(ImgurApiParams.TOKEN)
+                .log()
+                .all()
+                .spec(requestSpecification)
+                .expect()
+                .log()
+                .all()
+                .spec(responseSpecification)
+                .when()
+                .get(url);
+    }
+
+    @DisplayName("Обновление альбома")
+    @Test
+    void testUpdateAlbum() {
+        String albumHash = "lCV89PY";
+        String url = "/album" + albumHash;
+
+        RequestSpecification requestSpecification = new RequestSpecBuilder()
+                .addFormParam("title", "Omg Braxton")
+                .addFormParam("description", "Just a simple mem")
+                .build();
+
+        ResponseSpecification responseSpecification = new ResponseSpecBuilder()
+                .expectBody("success", is(true))
+                .expectBody("data", is(true))
+                .expectStatusCode(200)
+                .build();
+
+        given().when()
+                .auth()
+                .oauth2(ImgurApiParams.TOKEN)
+                .log()
+                .all()
+                .spec(requestSpecification)
+                .expect()
+                .log()
+                .all()
+                .spec(responseSpecification)
+                .when()
+                .post(url);
+    }
+
+    @DisplayName("Добавление альбома в избранное")
+    @Test
+    void testAddToFavourites() {
+        String albumHash = "lCV89PY";
+        String url = "/album" + albumHash + "/favorite";
+
+        RequestSpecification requestSpecification = new RequestSpecBuilder()
+                .build();
+
+        ResponseSpecification responseSpecification = new ResponseSpecBuilder()
+                .expectBody("success", is(true))
+                .expectBody("data", is("favorited"))
+                .expectStatusCode(200)
+                .build();
+
+        given().when()
+                .auth()
+                .oauth2(ImgurApiParams.TOKEN)
+                .log()
+                .all()
+                .spec(requestSpecification)
+                .expect()
+                .log()
+                .all()
+                .spec(responseSpecification)
+                .when()
+                .post(url);
+    }
+
+    @DisplayName("Удаление картинки из альбома")
+    @Test
+    void testRemovePictureFromAlbum() {
+        String albumHash = "lCV89PY";
+        String url = "/album" + albumHash + "/remove_images";
+
+        RequestSpecification requestSpecification = new RequestSpecBuilder()
+                .addFormParam("ids", "nYcP2p6")
+                .build();
+
+        ResponseSpecification responseSpecification = new ResponseSpecBuilder()
+                .expectBody("success", is(true))
+                .expectBody("data", is("true"))
+                .expectStatusCode(200)
+                .build();
+
+        given().when()
+                .auth()
+                .oauth2(ImgurApiParams.TOKEN)
+                .log()
+                .all()
+                .spec(requestSpecification)
+                .expect()
+                .log()
+                .all()
+                .spec(responseSpecification)
+                .when()
+                .post(url);
+    }
+
+    @DisplayName("Удаление альбома")
+    @Test
+    void testRemoveAlbum() {
+        String albumHash = "lCV89PY";
+        String url = "/album" + albumHash;
+
+        RequestSpecification requestSpecification = new RequestSpecBuilder()
+                .build();
+
+        ResponseSpecification responseSpecification = new ResponseSpecBuilder()
+                .expectBody("success", is(true))
+                .expectBody("data", is("true"))
+                .expectStatusCode(200)
+                .build();
+
+        given().when()
+                .auth()
+                .oauth2(ImgurApiParams.TOKEN)
+                .log()
+                .all()
+                .spec(requestSpecification)
+                .expect()
+                .log()
+                .all()
+                .spec(responseSpecification)
+                .when()
+                .delete(url);
     }
 
 
